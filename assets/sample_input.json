@@ -1,0 +1,285 @@
+{
+  "company": {
+    "name": "示例精密零部件有限公司（虚构）",
+    "factory": "精密传动件智能工厂",
+    "province": "江苏",
+    "industry": "汽车零部件",
+    "city": ""
+  },
+  "gates": {
+    "scale_above": true,
+    "legal_entity": true,
+    "accident_3y": false,
+    "credit_issue": false,
+    "secure": true,
+    "org_mech": true,
+    "talent": true,
+    "built": true,
+    "cmmm_level": 2,
+    "cmmm_score": 2.62,
+    "cmmm_source": "自评",
+    "current_level": "基础级",
+    "current_level_date": "2025-06"
+  },
+  "scenarios": [
+    {
+      "id": 1,
+      "name": "车间数字化规划与产线仿真",
+      "systems": "三维布局与物流仿真软件",
+      "linked": true,
+      "model": false,
+      "months": 30
+    },
+    {
+      "id": 2,
+      "name": "工业网络与边缘计算",
+      "systems": "工业环网、5G专网、边缘服务器",
+      "linked": true,
+      "model": false,
+      "months": 24
+    },
+    {
+      "id": 3,
+      "name": "车间三维可视化",
+      "systems": "三维可视化大屏",
+      "linked": false,
+      "model": false,
+      "months": 12
+    },
+    {
+      "id": 4,
+      "name": "产品三维设计与PDM",
+      "systems": "CAD、PDM",
+      "linked": true,
+      "model": false,
+      "months": 48
+    },
+    {
+      "id": 6,
+      "name": "工艺卡编制",
+      "systems": "CAPP（人工编制为主）",
+      "linked": false,
+      "model": false,
+      "months": 36
+    },
+    {
+      "id": 9,
+      "name": "APS智能排产",
+      "systems": "APS、MES",
+      "linked": true,
+      "model": true,
+      "ai": false,
+      "quantified": true,
+      "months": 18,
+      "evidence": "排程前后设备利用率、交付周期对比"
+    },
+    {
+      "id": 10,
+      "name": "MES生产进度跟踪",
+      "systems": "MES、设备数采",
+      "linked": true,
+      "model": false,
+      "quantified": true,
+      "months": 36
+    },
+    {
+      "id": 12,
+      "name": "原材料立体库",
+      "systems": "WMS、立体库",
+      "linked": true,
+      "model": false,
+      "months": 20
+    },
+    {
+      "id": 13,
+      "name": "AGV物料配送",
+      "systems": "AGV、调度系统",
+      "linked": true,
+      "model": false,
+      "months": 14
+    },
+    {
+      "id": 15,
+      "name": "安全隐患闭环管理",
+      "systems": "安全管控平台",
+      "linked": true,
+      "model": false,
+      "months": 12
+    },
+    {
+      "id": 16,
+      "name": "能源在线监测",
+      "systems": "能源管理系统、智能电表",
+      "linked": true,
+      "model": false,
+      "quantified": true,
+      "months": 20
+    },
+    {
+      "id": 24,
+      "name": "齿轮表面缺陷视觉检测",
+      "systems": "视觉检测工位",
+      "linked": true,
+      "model": true,
+      "ai": true,
+      "ai_types": [
+        "深度学习",
+        "机器视觉"
+      ],
+      "quantified": true,
+      "months": 10,
+      "evidence": "漏检率、检测节拍对比"
+    },
+    {
+      "id": 25,
+      "name": "批次质量追溯",
+      "systems": "MES、质量管理系统、二维码",
+      "linked": true,
+      "model": false,
+      "months": 30
+    },
+    {
+      "id": 26,
+      "name": "SPC过程质量分析",
+      "systems": "SPC",
+      "linked": true,
+      "model": false,
+      "months": 24
+    },
+    {
+      "id": 27,
+      "name": "设备联网监控",
+      "systems": "SCADA",
+      "linked": true,
+      "model": false,
+      "quantified": true,
+      "months": 30
+    },
+    {
+      "id": 28,
+      "name": "主轴振动预测性维护",
+      "systems": "振动传感器、健康管理模型",
+      "linked": true,
+      "model": true,
+      "ai": true,
+      "ai_types": [
+        "统计机器学习"
+      ],
+      "quantified": false,
+      "months": 4,
+      "confirmed": false
+    },
+    {
+      "id": 31,
+      "name": "精益看板与绩效核算",
+      "systems": "精益看板、绩效系统",
+      "linked": true,
+      "model": false,
+      "months": 18
+    },
+    {
+      "id": 37,
+      "name": "供应商协同门户",
+      "systems": "SRM",
+      "linked": true,
+      "model": false,
+      "months": 16
+    }
+  ],
+  "extras": {
+    "digital_plan": true,
+    "key_process_auto": true,
+    "erp": true,
+    "kpi_dashboard": true,
+    "plm": true,
+    "mes_erp_integrated": true,
+    "cost_control": true,
+    "crm": true,
+    "data_governance": 1,
+    "plm_lifecycle": false,
+    "design_kb": false,
+    "enterprise_integration": false,
+    "agents_count": 0,
+    "llm_in_production": false,
+    "ai_models_count": 2,
+    "tokens_per_day": 0,
+    "supply_chain_driven": 0,
+    "solution": 0,
+    "standards": 1,
+    "talent_system": false,
+    "influence": 1
+  },
+  "kpis": [
+    {
+      "name": "生产效率",
+      "before": 85,
+      "after": 104,
+      "unit": "件/人·班",
+      "period": "2023年→2025年",
+      "basis": "MES产量÷当班在岗人数"
+    },
+    {
+      "name": "产品不良率",
+      "before": "1.8%",
+      "after": "1.1%",
+      "period": "2023年→2025年",
+      "basis": "质量系统终检不良数÷总产量"
+    },
+    {
+      "name": "订单准时交付率",
+      "before": "91%",
+      "after": "97%",
+      "period": "2023年→2025年",
+      "basis": "ERP按期交付订单÷应交付订单"
+    },
+    {
+      "name": "设备综合利用率",
+      "before": "68%",
+      "after": "76%",
+      "period": "2023年→2025年",
+      "basis": "SCADA计算OEE"
+    },
+    {
+      "name": "库存周转率",
+      "before": 6.2,
+      "after": 7.9,
+      "unit": "次/年",
+      "period": "2023年→2025年",
+      "basis": "销售成本÷平均库存"
+    },
+    {
+      "name": "单位产值综合能耗",
+      "before": 0.052,
+      "after": 0.046,
+      "unit": "吨标准煤/万元",
+      "period": "2023年→2025年",
+      "basis": "能源统计报表÷工业总产值"
+    },
+    {
+      "name": "研制周期",
+      "before": 180,
+      "after": 150,
+      "unit": "天",
+      "period": "2023年→2025年立项产品",
+      "basis": "PDM立项到定型"
+    },
+    {
+      "name": "全员劳动生产率",
+      "before": 31.5,
+      "after": 38.2,
+      "unit": "万元/人",
+      "period": "2023年→2025年",
+      "basis": "工业增加值÷平均从业人数"
+    }
+  ],
+  "investment": {
+    "total_wan": 6800,
+    "start": "2022-03",
+    "end": "2025-06"
+  },
+  "target": "auto",
+  "local": {
+    "js_level_selftest": true,
+    "js_ai_selftest": true
+  }
+}

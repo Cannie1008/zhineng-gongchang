@@ -1,0 +1,18 @@
+# 生成物与临时文件
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 输出文件（研判结果、报告、批量汇总）
+*.csv
+研判报告*.docx
+!示例*.docx
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+.idea/
+.vscode/
