@@ -144,10 +144,18 @@ def cmd_batch(a):
                      sum(1 for x in res["flags"] if x["level"] == "高"),
                      "" if rec.get("apply_level") else rec.get("headline", "")])
     out = a.output or os.path.join(a.folder, "批量初筛.csv")
-    with open(out, "w", encoding="utf-8-sig", newline="") as fh:  # 带BOM，Excel直接打开不乱码
-        w = csv.writer(fh)
-        w.writerow(head)
-        w.writerows(rows)
+    ext = os.path.splitext(out)[1].lower()
+    if ext == ".xls":  # 老式二进制格式写不了，换成 xlsx，避免生成一个扩展名骗人的文件
+        out = os.path.splitext(out)[0] + ".xlsx"
+        ext = ".xlsx"
+        print("提示：.xls 是老式二进制格式，已改存为 %s" % os.path.basename(out))
+    if ext in (".xlsx", ".xlsm"):
+        X.write_rows(out, [head] + rows, sheet_name="批量初筛")
+    else:
+        with open(out, "w", encoding="utf-8-sig", newline="") as fh:  # 带BOM，Excel直接打开不乱码
+            w = csv.writer(fh)
+            w.writerow(head)
+            w.writerows(rows)
     print("已初筛%d家（读取失败%d个），汇总表：%s" % (ok, len(files) - ok, os.path.abspath(out)))
     for r in rows[:20]:
         print("  %s｜本轮可冲：%s｜下一目标：%s" % (r[1] or r[0], r[4], r[5]))

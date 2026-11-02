@@ -185,3 +185,110 @@ def workbook_to_input(path):
         warn.append("场景盘点里没有任何“有没有=是”的行")
     data["_warnings"] = warn
     return data
+
+
+# ---------------------------------------------------------------- 写 xlsx（只用标准库）
+def _esc(s):
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace('"', "&quot;"))
+
+
+def _colname(n):
+    s = ""
+    while n:
+        n, r = divmod(n - 1, 26)
+        s = chr(65 + r) + s
+    return s
+
+
+def _cell(ref, v, bold=False):
+    st = ' s="1"' if bold else ""
+    if v is None or v == "":
+        return ""
+    if isinstance(v, bool):
+        return '<c r="%s"%s t="inlineStr"><is><t>%s</t></is></c>' % (ref, st, "是" if v else "否")
+    if isinstance(v, (int, float)):
+        return '<c r="%s"%s><v>%s</v></c>' % (ref, st, repr(float(v)).rstrip("0").rstrip(".") or "0")
+    s = str(v)
+    # 纯数字文本（如 "2"）按数字写，避免左上角绿三角
+    if re.fullmatch(r"-?\d+(\.\d+)?", s) and not s.startswith("0") and len(s) < 15:
+        return '<c r="%s"%s><v>%s</v></c>' % (ref, st, s)
+    return ('<c r="%s"%s t="inlineStr"><is><t xml:space="preserve">%s</t></is></c>'
+            % (ref, st, _esc(s)))
+
+
+def write_rows(path, rows, sheet_name="Sheet1", widths=None, bold_first=True):
+    """把二维表写成真正的 .xlsx。rows 第一行为表头；宽度按内容估算，首行加粗并冻结。"""
+    rows = [list(r) for r in rows if r is not None]
+    if not rows:
+        rows = [[""]]
+    ncol = max(len(r) for r in rows)
+    if widths is None:
+        widths = []
+        for c in range(ncol):
+            longest = 0
+            for r in rows:
+                v = r[c] if c < len(r) else ""
+                if v is None:
+                    continue
+                w = sum(2 if ord(ch) > 127 else 1 for ch in str(v))
+                longest = max(longest, w)
+            widths.append(min(max(longest + 2, 8), 52))
+    cols = "".join('<col min="%d" max="%d" width="%d" customWidth="1"/>' % (i + 1, i + 1, w)
+                   for i, w in enumerate(widths))
+    body = []
+    for ri, r in enumerate(rows, 1):
+        cells = "".join(_cell("%s%d" % (_colname(ci + 1), ri), r[ci] if ci < len(r) else "",
+                              bold=(bold_first and ri == 1))
+                        for ci in range(ncol))
+        body.append('<row r="%d">%s</row>' % (ri, cells))
+    sheet = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+             '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+             '<sheetPr><outlinePr summaryBelow="1" summaryRight="1"/></sheetPr>'
+             '<sheetViews><sheetView workbookViewId="0"%s>'
+             '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>'
+             '</sheetView></sheetViews>'
+             '<sheetFormatPr defaultRowHeight="15"/>'
+             '<cols>%s</cols><sheetData>%s</sheetData></worksheet>'
+             % (' tabSelected="1"' if True else "", cols, "".join(body)))
+    ct = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+          '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+          '<Default Extension="xml" ContentType="application/xml"/>'
+          '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+          '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+          '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+          '</Types>')
+    rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+            '</Relationships>')
+    wb = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+          '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+          'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+          '<sheets><sheet name="%s" sheetId="1" r:id="rId1"/></sheets></workbook>' % _esc(sheet_name[:31]))
+    wbr = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+           '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+           '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
+           '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+           '</Relationships>')
+    styles = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+              '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+              '<fonts count="2"><font><sz val="11"/><name val="等线"/></font>'
+              '<font><b/><sz val="11"/><name val="等线"/></font></fonts>'
+              '<fills count="2"><fill><patternFill patternType="none"/></fill>'
+              '<fill><patternFill patternType="gray125"/></fill></fills>'
+              '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>'
+              '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+              '<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+              '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>'
+              '<cellStyles count="1"><cellStyle name="常规" xfId="0" builtinId="0"/></cellStyles>'
+              '</styleSheet>')
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml", ct)
+        z.writestr("_rels/.rels", rels)
+        z.writestr("xl/workbook.xml", wb)
+        z.writestr("xl/_rels/workbook.xml.rels", wbr)
+        z.writestr("xl/styles.xml", styles)
+        z.writestr("xl/worksheets/sheet1.xml", sheet)
+    return path

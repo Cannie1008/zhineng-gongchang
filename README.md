@@ -108,7 +108,7 @@
 
 ## 版本与更新
 
-当前 1.1.0，规则库 2026.10.23。变更见 [CHANGELOG.md](CHANGELOG.md)。
+当前 1.1.1，规则库 2026.10.23。变更见 [CHANGELOG.md](CHANGELOG.md)。
 
 每年新通知发布后的更新方式：改 `scripts/zngc_rules.py`（门槛、AI 比例、场景数量、要点表、时间窗、地方规则）→ 改 `references/policy.md` 和 `references/local.md` → 改 `SKILL.md` 里 `metadata` 的 `version`、`rules_version`、`data_date`。
 
